@@ -16,6 +16,7 @@ public:
 	Vector operator=(Vector&& another);
 	Vector(std::initializer_list<T> ilist);
 	Vector(iterator begin, iterator end);
+	~Vector();
 	
 public:
 	void assign(size_t count, const T& value = T());
@@ -270,6 +271,11 @@ inline Vector<T>::Vector(iterator begin, iterator end)
 		push_back(*begin);
 		begin++;
 	}
+}
+
+template<typename T>
+inline Vector<T>::~Vector() {
+	delete[] m_data;	
 }
 
 template<typename T>
