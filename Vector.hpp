@@ -6,6 +6,7 @@
 template <typename T>
 class Vector {
 public:
+	class iterator;
 	Vector();
 	explicit Vector(size_t count, const T& value = T());
 	explicit Vector(size_t count);
@@ -14,10 +15,12 @@ public:
 	Vector(Vector&& another);
 	Vector operator=(Vector&& another);
 	Vector(std::initializer_list<T> ilist);
-
+	Vector(iterator begin, iterator end);
+	
 public:
 	void assign(size_t count, const T& value = T());
 	void assign(std::initializer_list<T> ilist);
+	void assign(iterator begin, iterator end);
 
 public:
 	T& operator[](size_t index);
@@ -260,6 +263,16 @@ inline Vector<T>::Vector(std::initializer_list<T> ilist)
 }
 
 template<typename T>
+inline Vector<T>::Vector(iterator begin, iterator end)
+{
+	m_data = new T[m_capacity];
+	while (begin != end) {
+		push_back(*begin);
+		begin++;
+	}
+}
+
+template<typename T>
 inline T& Vector<T>::operator[](size_t index)
 {
 	return m_data[index];
@@ -369,6 +382,16 @@ inline void Vector<T>::assign(std::initializer_list<T> ilist)
 }
 
 template<typename T>
+inline void Vector<T>::assign(iterator begin, iterator end)
+{
+	clear();
+	while (begin != end) {
+		push_back(*begin);
+		begin++;
+	}
+}
+
+template<typename T>
 inline void Vector<T>::reserve(size_t new_capacity)
 {
 	if (new_capacity <= m_capacity)
@@ -383,7 +406,7 @@ inline void Vector<T>::reserve(size_t new_capacity)
 	m_data = new T[m_capacity];
 
 	for (size_t i = 0; i < m_size; i++)
-		m_data[i] = tempbuf;
+		m_data[i] = tempbuf[i];
 
 	delete[] tempbuf;
 }
